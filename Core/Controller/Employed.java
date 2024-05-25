@@ -1,11 +1,11 @@
 package Controller;
 
-public class Costumer extends Person {
+public class Employed extends Person {
 
     private String email;
     private String password;
   
-    public Costumer(String email, String password){
+    public Employed(String email, String password){
         this.email = email;
         this.password = password;
       

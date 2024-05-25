@@ -7,9 +7,10 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.function.BiConsumer;
 
+import Controller.Admin;
 import Controller.Agency;
 import Controller.Software;
-import Controller.Costumer;
+import Controller.Employed;
 import Controller.Person;
 
 
@@ -17,11 +18,14 @@ public class Main {
     
     public static void main(String ...args) throws Exception {
 
+        new Software();
+
         Scanner sc = new Scanner(System.in);
+
         String response_str;
         int response_int;
         boolean response_logic;
-        Software.loadState();
+       
 
         while (true) {
             
@@ -30,6 +34,11 @@ public class Main {
            System.out.println("3 - seleccionar agencia e adicionar funcionario na agencia ");
            System.out.println("4- Transferir funcionario para outra agencia ");
            System.out.println("5 - Eliminar agencia ");
+           System.out.println("6 - Mostrar dados de login");
+           System.out.println("7 - Login Emplyed");
+           System.out.println("8 - Add admin");
+           System.out.println("9 - show admin");
+           System.out.println("x - terminar sessao");
            System.out.println("* sair");
 
             response_str = sc.next();
@@ -64,9 +73,9 @@ public class Main {
                             System.out.println("A passe: ");
                             String pass = sc.nextLine();
 
-                            Costumer costumer = new Costumer(email, pass);
+                            Employed costumer = new Employed(email, pass);
 
-                            Software.actualAgencyAppendCostumer(costumer);
+                            Software.actualAgencyAppendEmployed(costumer);
                             
                         }
                     }
@@ -87,7 +96,7 @@ public class Main {
                                     String code = sc.nextLine();
                                     Agency agency2 = Software.getAgency(code);
 
-                                    Software.transfereCostumer(email, agency, agency2);
+                                    Software.transfereEmployed(email, agency, agency2);
                                 }while(repeat);
                                
                                
@@ -100,9 +109,51 @@ public class Main {
 
                             }
                             else{
-                                System.out.println("Salvando...");
-                                Software.saveAgencyState();
-                                return;
+                                if(response_str.equals("6")){
+                                    Software.showLoggedEmplyed();
+                                    Software.showActualAgency();
+
+                                }
+                                else{
+                                    if(response_str.equals("7")){
+                                       System.out.println("Login de Email e Pass");
+                                       Software.login(
+                                        sc.nextLine(), sc.nextLine()
+                                       );
+                                       
+    
+                                    }
+                                    else{
+                                        if(response_str.equals("8")){
+                                            System.out.println("Add admin");
+                                            System.out.println("Email e senha");
+                                            Admin admin = new Admin(sc.nextLine(), sc.nextLine());
+                                            Software.appendAdmin(admin);
+                                         }
+                                         else{
+                                            if(response_str.equals("9")){
+                                                System.out.println("Show");
+                                                Software.showAdmins();
+                                                
+             
+                                             }
+                                             else{
+                                                if(response_str.equals("x")){
+                                                   Software.logout();
+                                                 }
+                                                 else{
+                                                     System.out.println("Salvando...");
+                                                     Software.saveAgencyState();
+                                                     Software.saveAdminState();
+                                                     Software.logout();
+                                                     return;
+                                                 }
+                                             }
+                                         }
+                                    }
+                                   
+                                }
+                                
                             }
                         }
                     }

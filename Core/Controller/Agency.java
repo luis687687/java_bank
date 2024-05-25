@@ -7,14 +7,14 @@ import java.util.HashMap;
 public class Agency implements Serializable{
     
     public HashMap<String, Person> clients;
-    public HashMap<String, Person> costumers;
+    public HashMap<String, Person> employeds;
     private static int auto_increment_id = -1;
     private String code;
 
     
     public Agency(String code){
         this.clients = new HashMap<>();
-        this.costumers = new HashMap<>();
+        this.employeds = new HashMap<>();
         this.code = code;
     }
 
@@ -26,32 +26,32 @@ public class Agency implements Serializable{
     }
     
 
-    public boolean appendCostumer(Costumer person){
-        for(Person costumer : costumers.values()){
-            Costumer costumer2 = (Costumer) costumer;
-            if(costumer2.getEmail().equals(person.getEmail())){ // prevejo que isso nunca vai acontecer, uma vez que o configure controla tudo
+    public boolean appendEmployed(Employed person){
+        for(Person costumer : employeds.values()){
+            Employed employed2 = (Employed) costumer;
+            if(employed2.getEmail().equals(person.getEmail())){ // prevejo que isso nunca vai acontecer, uma vez que o configure controla tudo
                 System.out.println("Não pode criar uma conta com email já catalogado!");
                 return false;
             }
         }
-        this.costumers.put(person.getEmail(), person); //Funcionário salvo
+        this.employeds.put(person.getEmail(), person); //Funcionário salvo
         return true;
     }
 
-    public Costumer checkCostumerEmail(String email){        
-        for (Person costumer2 : costumers.values()) {
-            Costumer costumer3 = (Costumer) costumer2;
+    public Employed checkEmployedEmail(String email){        
+        for (Person employed2 : employeds.values()) {
+            Employed costumer3 = (Employed) employed2;
             if(email.equals(costumer3.getEmail()))
                 return costumer3;
         }
         return null;
     }
 
-    public Costumer remove(String email){
-        Costumer costumer2 = checkCostumerEmail(email);
-        if(!(costumer2 instanceof Costumer))
+    public Employed remove(String email){
+        Employed employed2 = checkEmployedEmail(email);
+        if(!(employed2 instanceof Employed))
             return null;
-        return (Costumer) costumers.remove(costumer2.getEmail());
+        return (Employed) employeds.remove(employed2.getEmail());
     }
 
     
@@ -60,11 +60,11 @@ public class Agency implements Serializable{
         st.append("Agency: ");
         st.append(code);
         st.append(" id: ");
-        if(costumers.size() > 0){
+        if(employeds.size() > 0){
             st.append("\n");
             st.append("======== USER ========");
-            for (Person person : costumers.values()) {
-                Costumer costumer = ((Costumer)person);
+            for (Person person : employeds.values()) {
+                Employed costumer = ((Employed)person);
                 st.append("\n");
                 st.append(costumer);
                
