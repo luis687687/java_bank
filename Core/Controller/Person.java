@@ -12,9 +12,9 @@ public class Person implements Serializable{
     public Person(){
 
     }
-    public Person(String name){
-        this.bi = new BI();
-        this.bi.fullname = name;
+    public Person(BI bi, String phone){
+        this.phone = phone;
+        this.bi = bi;
     }
 
     public String toString(){

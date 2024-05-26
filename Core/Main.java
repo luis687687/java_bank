@@ -6,11 +6,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.function.BiConsumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import Controller.Admin;
 import Controller.Agency;
+import Controller.BI;
+import Controller.Client;
 import Controller.Software;
 import Controller.Employed;
+import Controller.PairClientAgency;
 import Controller.Person;
 
 
@@ -22,8 +27,8 @@ public class Main {
 
         Scanner sc = new Scanner(System.in);
 
+       
         String response_str;
-        int response_int;
         boolean response_logic;
        
 
@@ -38,6 +43,8 @@ public class Main {
            System.out.println("7 - Login Emplyed");
            System.out.println("8 - Add admin");
            System.out.println("9 - show admin");
+           System.out.println("10 - Criar Cliente");
+           System.out.println("11 - Ver cliente");
            System.out.println("x - terminar sessao");
            System.out.println("* sair");
 
@@ -142,11 +149,40 @@ public class Main {
                                                    Software.logout();
                                                  }
                                                  else{
-                                                     System.out.println("Salvando...");
-                                                     Software.saveAgencyState();
-                                                     Software.saveAdminState();
-                                                     Software.logout();
-                                                     return;
+                                                    if(response_str.equals("10")){
+                                                        System.out.println("Informe a agencia");
+                                                        response_str = sc.nextLine();
+                                                        if(Software.setActualAgency(response_str)){
+                                                            System.out.println("Code do cliente");
+                                                            String codeclient = sc.nextLine();
+                                                            System.out.println("Informe o nome ");
+
+                                                            String name = sc.nextLine();
+                                                            BI bi = new BI();
+                                                            bi.setNumber(codeclient);
+                                                            bi.fullname = name;
+                                                            Software.actualAgencyAppendClient(new Client(bi, "999"));
+                                                        }
+
+                                                      }
+                                                      else{
+                                                        if(response_str.equals("11")){
+                                                            System.out.println("Informe a identificação do cliente");
+                                                            response_str = sc.nextLine();
+                                                            PairClientAgency pair = Software.getOneClient(response_str);
+                                                            if(pair instanceof PairClientAgency)
+                                                            System.out.println(pair.client);
+                                                            
+                                                          }
+                                                          else{
+                                                              System.out.println("Salvando...");
+                                                              Software.saveAgencyState();
+                                                              Software.saveAdminState();
+                                                              Software.logout();
+                                                              return;
+                                                          }
+                                                     
+                                                      }
                                                  }
                                              }
                                          }
