@@ -1,13 +1,10 @@
 package Controller;
-public class Client extends Person {
+public class Account {
     
     private double money;
 
-    public Client(BI bi, String phone){
-        super(bi, phone);
-        
-    }
-
+    
+    
     public void setMoney(double money){
         this.money = money;
     }
@@ -15,17 +12,16 @@ public class Client extends Person {
         return this.money;
     }
 
-    public String getCode(){
-        return this.bi.getNumber();
+    public boolean depositMoney(double money){
+        if(money > 0){
+            this.money += money;
+            return true;
+        }
+        return false;
     }
 
-    public void depositMoney(double money){
-        if(money > 0)
-            this.money += money;
-    }
     public boolean removeMoney(double money){
-        
-            if(money > 0){
+            if(this.money > 0){
                 this.money -= money;
                 return true;
             }
@@ -37,7 +33,4 @@ public class Client extends Person {
         return this.money > 0;
     }
 
-    public String toString(){
-        return this.bi.fullname+" saldo "+this.money;
-    }
 }

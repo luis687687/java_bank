@@ -1,9 +1,9 @@
 package Controller;
 
 public class PairClientAgency {
-    public Client client;
+    public IClient client;
     public Agency agency;
-    public PairClientAgency(Client client, Agency agency){
+    public PairClientAgency(IClient client, Agency agency){
         this.client = client;
         this.agency = agency;
     }

@@ -11,6 +11,7 @@ public class BI implements Serializable{
     private String number;
     public String localborn;
     public String dateborn;
+    public String image;
 
     
     public void setNumber(String number){

@@ -11,9 +11,9 @@ import java.util.HashMap;
 
 public class Agency implements Serializable{
     
-    private HashMap<String, Person> clients;
+    private HashMap<String, IClient> clients;
     private HashMap<String, Person> employeds;
-    private Client selected_client;
+    private IClient selected_client;
     private Employed selected_employed;
 
     private String code;
@@ -25,7 +25,7 @@ public class Agency implements Serializable{
         this.code = code;
     }
 
-    public HashMap<String, Person> getClients(){
+    public HashMap<String, IClient> getClients(){
         return this.clients;
     }
     public HashMap<String, Person> getEmplyeds(){
@@ -35,11 +35,18 @@ public class Agency implements Serializable{
     public String getCode(){
         return this.code;
     }
-    public Client getSelectedClient(){
+    public IClient getSelectedClient(){
         return this.selected_client;
     }
     public Employed getSelectEmployed(){
         return this.selected_employed;
+    }
+
+    public boolean selectedClientDeposit(double money){
+        return selected_client.getAccount().depositMoney(money);
+    }
+    public boolean selectedClientRemoveMoney(double money){
+        return selected_client.getAccount().removeMoney(money);
     }
     
 
@@ -56,14 +63,14 @@ public class Agency implements Serializable{
     }
 
 
-    public boolean appendClient(Client client){
+    public boolean appendClient(IClient client){
         clients.put(client.getCode(), client);
         return true;
     }
 
-    public boolean setSelecteClient(String code){
+    public boolean setSelectedClient(String code){
         selected_client = this.hasClientWithSameCode(code);
-        if((selected_client instanceof Client))
+        if((selected_client instanceof IClient))
             return false;
         return true;
     }
@@ -84,11 +91,10 @@ public class Agency implements Serializable{
         return (Employed) employeds.remove(employed2.getEmail());
     }
 
-    public Client hasClientWithSameCode(String code){
-        for(Person client2 : clients.values()){
-            Client client3 = (Client) client2;
-            if(client3.getCode().equals(code))
-                return client3;
+    public IClient hasClientWithSameCode(String code){
+        for(IClient client2 : clients.values()){
+            if(client2.getCode().equals(code))
+                return client2;
         }
 
         return null;
@@ -115,9 +121,9 @@ public class Agency implements Serializable{
             st.append("\n");
             st.append("=========== Clientes ===========");
             st.append("\n");
-            for(Person client : clients.values()){
+            for(IClient client : clients.values()){
                 st.append("\n");
-                st.append(((Client)client));
+                st.append((client));
                 
             }
         }

@@ -7,20 +7,16 @@ import java.io.Serializable;
 public class Person implements Serializable{
 
     String phone;
-    BI bi;
-
-    public Person(){
-
-    }
-    public Person(BI bi, String phone){
+    String optionalphone;
+    public Person(String phone, String optionalphone){
         this.phone = phone;
-        this.bi = bi;
+        this.optionalphone = optionalphone;
     }
 
-    public String toString(){
+   
+   
 
-        return this.bi.fullname;
-    }
+    
 
     
 }

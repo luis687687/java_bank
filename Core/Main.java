@@ -45,6 +45,8 @@ public class Main {
            System.out.println("9 - show admin");
            System.out.println("10 - Criar Cliente");
            System.out.println("11 - Ver cliente");
+           System.out.println("12 - Depositar dinheiro na conta do cliente");
+           System.out.println("13 - Levantar dinheiro na conta do cliente");
            System.out.println("x - terminar sessao");
            System.out.println("* sair");
 
@@ -175,11 +177,51 @@ public class Main {
                                                             
                                                           }
                                                           else{
-                                                              System.out.println("Salvando...");
-                                                              Software.saveAgencyState();
-                                                              Software.saveAdminState();
-                                                              Software.logout();
-                                                              return;
+                                                            if(response_str.equals("12")){
+                                                                System.out.println("Informe a identificação do cliente a depositar ");
+                                                                response_str = sc.nextLine();
+                                                                PairClientAgency pair = Software.getOneClient(response_str);
+                                                                System.out.println(pair+ " parrr ");
+                                                                if(pair instanceof PairClientAgency)
+                                                                {
+                                                                    if(pair.agency instanceof Agency){
+                                                                        Software.setActualAgency(pair.agency.getCode());
+                                                                        Software.actualAgencySelectClient(pair.client.getCode());
+                                                                        System.out.println("Valor a depositar ");
+                                                                        Software.actualAgencySelectedClientDeposityMoney(sc.nextDouble());
+
+                                                                    }
+                                                                
+                                                                }
+                                                            
+                                                              }
+                                                              else{
+                                                                if(response_str.equals("13")){
+                                                                    System.out.println("Informe a identificação do cliente a levantar ");
+                                                                    response_str = sc.nextLine();
+                                                                    PairClientAgency pair = Software.getOneClient(response_str);
+                                                                    
+                                                                    if(pair instanceof PairClientAgency)
+                                                                    {
+                                                                        if(pair.agency instanceof Agency){
+                                                                            Software.setActualAgency(pair.agency.getCode());
+                                                                            Software.actualAgencySelectClient(pair.client.getCode());
+                                                                            
+                                                                            Software.actualAgencySelectedClientRemoveMoney(sc.nextDouble());
+    
+                                                                        }
+                                                                    
+                                                                    }
+                                                                
+                                                                  }
+                                                                  else{
+                                                                      System.out.println("Salvando...");
+                                                                      Software.saveAgencyState();
+                                                                      Software.saveAdminState();
+                                                                      Software.logout();
+                                                                      return;
+                                                                  }
+                                                              }
                                                           }
                                                      
                                                       }

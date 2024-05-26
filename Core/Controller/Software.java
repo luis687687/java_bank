@@ -96,6 +96,16 @@ public class Software  {
         return actual_Agency instanceof Agency;
    }
 
+   public static boolean actualAgencySelectClient(String clientcode){
+        return actual_Agency.setSelectedClient(clientcode);
+   }
+   public static boolean actualAgencySelectedClientDeposityMoney(double money){
+        return actual_Agency.getSelectedClient().getAccount().depositMoney(money);
+   }
+   public static boolean actualAgencySelectedClientRemoveMoney(double money){
+        return actual_Agency.getSelectedClient().getAccount().removeMoney(money);
+   }
+
 
     //retorna falso se o email do funcionário já existir
    //geral
@@ -105,18 +115,18 @@ public class Software  {
     if(checkEmailInSystem(employed.getEmail()) instanceof PairEmployedAgency)
         return false;
     agency.appendEmployed(employed);
-    updateAgencyMap(agency);
+   
     return true;
    }
 
    //retorna falso se o numero de identificação do cliente já existir
    //geral
-   public static boolean agencyAppendClient(Agency agency, Client client){ 
+   public static boolean agencyAppendClient(Agency agency, IClient client){ 
         for(Agency agency2 : agencies.values())
-            if(agency2.hasClientWithSameCode(client.getCode()) instanceof Client)
+            if(agency2.hasClientWithSameCode(client.getCode()) instanceof IClient)
                 return false;
         agency.appendClient(client);
-        updateAgencyMap(agency);
+       
         return true;
    }
 
@@ -125,11 +135,11 @@ public class Software  {
         return agencyAppendEmployed(actual_Agency, employed);
    }
    //retorna falso se o numero de identificação do cliente já existir
-   public static boolean actualAgencyAppendClient(Client client){
+   public static boolean actualAgencyAppendClient(IClient client){
     return agencyAppendClient(actual_Agency, client);
    }
 
-   public static HashMap<String, Person> getClientsFromAgency(String agencycode){
+   public static HashMap<String, IClient> getClientsFromAgency(String agencycode){
         return getAgency(agencycode).getClients();
    }
    public static HashMap<String, Person> getEmployedsFromAgency(String agencycode){
@@ -139,10 +149,9 @@ public class Software  {
    //selecciona um cliente, retornando par client-agencia
    public static PairClientAgency getOneClient(String clientcode){
     for(Agency agency : agencies.values()){
-        for(Person client : agency.getClients().values()){
-            Client client2 = (Client) client;
-            if(client2.getCode().equals(clientcode))
-                return new PairClientAgency(client2, agency);
+        for(IClient client : agency.getClients().values()){
+            if(client.getCode().equals(clientcode))
+                return new PairClientAgency(client, agency);
         }
     }
     return null;
@@ -172,22 +181,18 @@ public class Software  {
             return employed2;
         return null;
    }
-   
-   //privado porque é restrito para o uso interno, 
-   //pois a actualizar uma agencia individualmente no array
-   private static void updateAgencyMap(Agency agency){ 
-        agencies.put(agency.getCode(), agency);
-   }
 
    //transferir funcionario com email de agencia from para agencia to
    public static boolean transfereEmployed(String email, Agency from, Agency to){
+        if(!(to instanceof Agency) || !(from instanceof Agency))
+            return false;
+
         if(to.checkEmployedEmail(email) instanceof Employed)
             return false; //já pertence neste distino
         if(!(from.checkEmployedEmail(email) instanceof Employed))
             return false; //nao pertence nesta origem
         to.appendEmployed(from.removeEmployed(email));
-        updateAgencyMap(from);
-        updateAgencyMap(to);
+      
         return true;
    }
 
