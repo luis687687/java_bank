@@ -8,12 +8,10 @@ public class PersonSingular  extends Person implements IClient{
         super(phone, optionalphone);
         this.phone = phone;
         this.bi = bi;
+        this.account = new Account();
     }
 
-    public String toString(){
-        return this.bi.fullname;
-    }
-
+  
     public String getName(){
         return this.bi.fullname;
     }
@@ -22,5 +20,9 @@ public class PersonSingular  extends Person implements IClient{
     }
     public Account getAccount(){
         return this.account;
+    }
+
+    public String toString(){
+        return getName()+" code: "+getCode()+" Money: "+getAccount().getMoney();
     }
 }

@@ -9,4 +9,9 @@ public class Comertial {
     public String name;
     public String image;
 
+    public Comertial(String comertialcode, String name){
+        this.comertialcode = comertialcode;
+        this.name = name;
+    }
+
 }

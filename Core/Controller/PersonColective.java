@@ -7,6 +7,7 @@ public class PersonColective extends Person implements IClient {
     public PersonColective(Comertial comertial){
         super(comertial.phone, comertial.optionalphone);
         this.comertial = comertial;
+        this.account = new Account();
     }
 
     public String getName(){
@@ -17,5 +18,8 @@ public class PersonColective extends Person implements IClient {
     }
     public Account getAccount(){
         return this.account;
+    }
+    public String toString(){
+        return getName()+" code: "+getCode()+" Money: "+getAccount().getMoney();
     }
 }

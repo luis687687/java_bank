@@ -12,11 +12,14 @@ import java.util.regex.Pattern;
 import Controller.Admin;
 import Controller.Agency;
 import Controller.BI;
-import Controller.Client;
+import Controller.Comertial;
 import Controller.Software;
 import Controller.Employed;
+import Controller.IClient;
 import Controller.PairClientAgency;
 import Controller.Person;
+import Controller.PersonColective;
+import Controller.PersonSingular;
 
 
 public class Main {
@@ -82,7 +85,7 @@ public class Main {
                             System.out.println("A passe: ");
                             String pass = sc.nextLine();
 
-                            Employed costumer = new Employed(email, pass);
+                            Employed costumer = new Employed(email, pass, "922299", "" );
 
                             Software.actualAgencyAppendEmployed(costumer);
                             
@@ -136,7 +139,7 @@ public class Main {
                                         if(response_str.equals("8")){
                                             System.out.println("Add admin");
                                             System.out.println("Email e senha");
-                                            Admin admin = new Admin(sc.nextLine(), sc.nextLine());
+                                            Admin admin = new Admin(sc.nextLine(), sc.nextLine(), "", "");
                                             Software.appendAdmin(admin);
                                          }
                                          else{
@@ -163,7 +166,16 @@ public class Main {
                                                             BI bi = new BI();
                                                             bi.setNumber(codeclient);
                                                             bi.fullname = name;
-                                                            Software.actualAgencyAppendClient(new Client(bi, "999"));
+                                                            IClient client;
+                                                            System.out.println("O tipo de cliente (singular/s e colectivo/c)");
+                                                            System.out.println();
+                                                            if(sc.nextLine().equals("s")){
+                                                                client = new PersonSingular(bi, "", "");
+                                                            }else{
+                                                                client = new PersonColective(new Comertial(codeclient, name));
+                                                        }
+                                                                    
+                                                            Software.actualAgencyAppendClient(client);
                                                         }
 
                                                       }
