@@ -3,12 +3,13 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.function.BiConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import Controller.Account;
 import Controller.Admin;
 import Controller.Agency;
 import Controller.BI;
@@ -16,6 +17,7 @@ import Controller.Comertial;
 import Controller.Software;
 import Controller.Employed;
 import Controller.IClient;
+import Controller.Moviment;
 import Controller.PairClientAgency;
 import Controller.Person;
 import Controller.PersonColective;
@@ -33,8 +35,22 @@ public class Main {
        
         String response_str;
         boolean response_logic;
-       
+        Date d = new Date();
 
+
+        long tim = d.getTime();
+        long alter = tim + 1000;
+        Date d2 = new Date();
+        d2.setTime(alter);
+        
+
+        System.out.println(tim);
+        System.out.println(d.getTime());
+        System.out.println(d);
+        System.out.println(d2);
+
+        
+        
         while (true) {
             
            System.out.println("1 -criar agencia ");
@@ -50,6 +66,8 @@ public class Main {
            System.out.println("11 - Ver cliente");
            System.out.println("12 - Depositar dinheiro na conta do cliente");
            System.out.println("13 - Levantar dinheiro na conta do cliente");
+           System.out.println("14 - Transferencia");
+           System.out.println("15 - Pedir crédito");
            System.out.println("x - terminar sessao");
            System.out.println("* sair");
 
@@ -183,24 +201,29 @@ public class Main {
                                                         if(response_str.equals("11")){
                                                             System.out.println("Informe a identificação do cliente");
                                                             response_str = sc.nextLine();
-                                                            PairClientAgency pair = Software.getOneClient(response_str);
-                                                            if(pair instanceof PairClientAgency)
-                                                            System.out.println(pair.client);
+                                                            PairClientAgency pair = Software.getOneClientById(response_str);
+                                                          
+                                                            if(pair instanceof PairClientAgency){
+                                                                System.out.println(pair.client);
+                                                                for (Moviment moviment : pair.client.getAccount().getMoviments()) 
+                                                                    System.out.println(moviment);
+                                                            }
                                                             
+                                                            System.out.println("");
                                                           }
                                                           else{
                                                             if(response_str.equals("12")){
                                                                 System.out.println("Informe a identificação do cliente a depositar ");
                                                                 response_str = sc.nextLine();
-                                                                PairClientAgency pair = Software.getOneClient(response_str);
+                                                                PairClientAgency pair = Software.getOneClientById(response_str);
                                                                 System.out.println(pair+ " parrr ");
                                                                 if(pair instanceof PairClientAgency)
                                                                 {
                                                                     if(pair.agency instanceof Agency){
                                                                         Software.setActualAgency(pair.agency.getCode());
-                                                                        Software.actualAgencySelectClient(pair.client.getCode());
+                                                                        Software.getActualAgency().setSelectedClient(pair.client.getCode());
                                                                         System.out.println("Valor a depositar ");
-                                                                        Software.actualAgencySelectedClientDeposityMoney(sc.nextDouble());
+                                                                        Software.getActualAgency().getSelectedClient().getAccount().depositMoney(sc.nextDouble());
 
                                                                     }
                                                                 
@@ -211,15 +234,14 @@ public class Main {
                                                                 if(response_str.equals("13")){
                                                                     System.out.println("Informe a identificação do cliente a levantar ");
                                                                     response_str = sc.nextLine();
-                                                                    PairClientAgency pair = Software.getOneClient(response_str);
+                                                                    PairClientAgency pair = Software.getOneClientById(response_str);
                                                                     
                                                                     if(pair instanceof PairClientAgency)
                                                                     {
                                                                         if(pair.agency instanceof Agency){
                                                                             Software.setActualAgency(pair.agency.getCode());
-                                                                            Software.actualAgencySelectClient(pair.client.getCode());
-                                                                            
-                                                                            Software.actualAgencySelectedClientRemoveMoney(sc.nextDouble());
+                                                                            Software.getActualAgency().setSelectedClient(pair.client.getCode());
+                                                                            Software.getActualAgency().getSelectedClient().getAccount().removeMoney(sc.nextDouble());
     
                                                                         }
                                                                     
@@ -227,11 +249,64 @@ public class Main {
                                                                 
                                                                   }
                                                                   else{
-                                                                      System.out.println("Salvando...");
-                                                                      Software.saveAgencyState();
-                                                                      Software.saveAdminState();
-                                                                      Software.logout();
-                                                                      return;
+                                                                    if(response_str.equals("14")){
+                                                                        System.out.println("Informe a identificação ou iban do cliente a transferir");
+                                                                        response_str = sc.nextLine();
+                                                                        PairClientAgency pair = Software.getOneClientById(response_str);
+                                                                        
+                                                                        if(pair instanceof PairClientAgency)
+                                                                        {
+                                                                            if(pair.agency instanceof Agency){
+                                                                                Software.setActualAgency(pair.agency.getCode());
+                                                                                Software.getActualAgency().setSelectedClient(pair.client.getCode());
+                                                                                System.out.println("Conta destino: ");
+                                                                                String info = sc.nextLine();
+                                                                                PairClientAgency destin = Software.getOneClientByAccountNumber(info);
+                                                                                System.out.println("Valor a transferir ");
+                                                                                double valor = sc.nextDouble();
+                                                                                sc.nextLine();
+                                                                                if(! (destin instanceof PairClientAgency)){
+                                                                                    destin = Software.getOneClientById(info);
+                                                                                    if( ! (destin instanceof PairClientAgency))
+                                                                                    {
+                                                                                        System.out.println("Not found....");
+                                                                                        Software.transfereMoneyToAubsentClient(info, valor);
+                                                                                        continue;
+                                                                                    }
+                                                                                    
+                                                                                }
+                                                                                System.out.println("Found...");
+                                                                                Software.transfereMoneyToExistentClient(destin.client, valor);
+        
+                                                                            }
+                                                                        
+                                                                        }
+                                                                    
+                                                                      }
+                                                                      else{
+                                                                        if(response_str.equals("15")){
+                                                                           
+                                                                            System.out.println("Informe a identificação ou iban do cliente a transferir");
+                                                                            response_str = sc.nextLine();
+                                                                            PairClientAgency pair = Software.getOneClientById(response_str);
+                                                                            if(pair instanceof PairClientAgency){
+                                                                                System.out.println("Informe o montante ");
+                                                                                double v = sc.nextDouble();
+                                                                                sc.nextLine();
+                                                                                IClient client = pair.client;
+                                                                                if(!client.getAccount().setCredite(v))
+                                                                                    System.out.println("Não permitido");
+                                                                            }
+                                                                            
+                                                                          }
+                                                                          else{
+                                                                              System.out.println("Salvando...");
+                                                                              Software.saveAgencyState();
+                                                                              Software.saveAdminState();
+                                                                              Software.logout();
+                                                                              return;
+                                                                          }
+                                                                      }
                                                                   }
                                                               }
                                                           }

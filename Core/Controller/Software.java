@@ -1,4 +1,5 @@
 package Controller;
+import java.util.Date;
 import java.util.HashMap;
 /*****
  * 
@@ -32,7 +33,7 @@ public class Software  {
     public Employed getLoggedEmployed(){
         return logged_emplyed;
     }
-    public Agency getActualAgency(){
+    public static Agency getActualAgency(){
         return actual_Agency;
     }
    
@@ -96,15 +97,15 @@ public class Software  {
         return actual_Agency instanceof Agency;
    }
 
-   public static boolean actualAgencySelectClient(String clientcode){
-        return actual_Agency.setSelectedClient(clientcode);
-   }
-   public static boolean actualAgencySelectedClientDeposityMoney(double money){
-        return actual_Agency.getSelectedClient().getAccount().depositMoney(money);
-   }
-   public static boolean actualAgencySelectedClientRemoveMoney(double money){
-        return actual_Agency.getSelectedClient().getAccount().removeMoney(money);
-   }
+//    public static boolean actualAgencySelectClient(String clientcode){
+//         return actual_Agency.setSelectedClient(clientcode);
+//    }
+//    public static boolean actualAgencySelectedClientDeposityMoney(double money){
+//         return actual_Agency.getSelectedClient().getAccount().depositMoney(money);
+//    }
+//    public static boolean actualAgencySelectedClientRemoveMoney(double money){
+//         return actual_Agency.getSelectedClient().getAccount().removeMoney(money);
+//    }
 
 
     //retorna falso se o email do funcionário já existir
@@ -147,10 +148,21 @@ public class Software  {
    }
 
    //selecciona um cliente, retornando par client-agencia
-   public static PairClientAgency getOneClient(String clientcode){
+   public static PairClientAgency getOneClientById(String clientcode){
     for(Agency agency : agencies.values()){
         for(IClient client : agency.getClients().values()){
             if(client.getCode().equals(clientcode))
+                return new PairClientAgency(client, agency);
+        }
+    }
+    return null;
+   }
+
+   //selecciona um cliente, retornando par client-agencia
+   public static PairClientAgency getOneClientByAccountNumber(String accountnumber){
+    for(Agency agency : agencies.values()){
+        for(IClient client : agency.getClients().values()){
+            if(client.getAccount().getIban().equals(accountnumber))
                 return new PairClientAgency(client, agency);
         }
     }
@@ -247,6 +259,31 @@ public class Software  {
             return true;
         System.out.println("Faça login com admin Válido");
         return false;
+    }
+
+    public PairClientAgency getClientByIban(String iban){
+        for(Agency agency : agencies.values()){
+            IClient client = agency.getClientByIban(iban);
+            if( client instanceof IClient)
+                return new PairClientAgency(client, agency);
+            }
+        return null;
+    }
+
+    public static boolean transfereMoneyToExistentClient(IClient client2, double valor){
+        if(client2 instanceof IClient){
+            //data end será uma data normal, porque existe o cliente na nossa base de dados
+            Date date = new Date((new Date()).getTime() + Configurations.milisseconds_time_transf_existent_client);
+            if(actual_Agency.getSelectedClient().getAccount().transfere(valor, client2.getAccount().getIban(), date))
+                client2.getAccount().receive(valor, actual_Agency.getSelectedClient().getAccount().getIban(), date); 
+        }
+        return true;
+    }
+
+    public static boolean transfereMoneyToAubsentClient(String iban, double valor){
+        Date date = new Date((new Date()).getTime() + Configurations.milisseconds_time_transf_aubsent_client);
+        actual_Agency.getSelectedClient().getAccount().transfere(valor, iban, date);
+        return true;
     }
    
 }

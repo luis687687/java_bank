@@ -1,5 +1,4 @@
 package Controller;
-
 public class PersonColective extends Person implements IClient {
     
     Comertial comertial;
@@ -20,6 +19,8 @@ public class PersonColective extends Person implements IClient {
         return this.account;
     }
     public String toString(){
-        return getName()+" code: "+getCode()+" Money: "+getAccount().getMoney();
+        return "colective: "+getName()+" code: "+getCode()+" Money: "+getAccount().getMoney()+" iban: "+getAccount().getIban()+" actual credit: "+getAccount().getCredite();
     }
+
+    
 }

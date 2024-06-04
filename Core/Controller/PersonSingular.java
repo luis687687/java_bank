@@ -23,6 +23,7 @@ public class PersonSingular  extends Person implements IClient{
     }
 
     public String toString(){
-        return getName()+" code: "+getCode()+" Money: "+getAccount().getMoney();
+        return "singular: "+getName()+" code: "+getCode()+" Money: "+getAccount().getMoney()+" iban: "+getAccount().getIban()+" actual credit: "+getAccount().getCredite();
+
     }
 }

@@ -42,12 +42,12 @@ public class Agency implements Serializable{
         return this.selected_employed;
     }
 
-    public boolean selectedClientDeposit(double money){
-        return selected_client.getAccount().depositMoney(money);
-    }
-    public boolean selectedClientRemoveMoney(double money){
-        return selected_client.getAccount().removeMoney(money);
-    }
+    // public boolean selectedClientDeposit(double money){
+    //     return selected_client.getAccount().depositMoney(money);
+    // }
+    // public boolean selectedClientRemoveMoney(double money){
+    //     return selected_client.getAccount().removeMoney(money);
+    // }
     
 
     public boolean appendEmployed(Employed person){
@@ -128,6 +128,20 @@ public class Agency implements Serializable{
             }
         }
         return st.toString();
+    }
+    
+    public static boolean isLocalIban(String iban){
+        String iban2 = iban.substring(0, 2);
+        if(iban2.isEmpty() || iban.length() != 20)
+            return false;
+        return true;
+    }
+
+    public IClient getClientByIban(String iban){
+        for(IClient client : clients.values())
+            if(client.getAccount().getIban().equals(iban))
+                return client;
+        return null;
     }
     
 }

@@ -1,6 +1,8 @@
 package Controller;
 
-public class Comertial {
+import java.io.Serializable;
+
+public class Comertial implements Serializable{
     
     public String comertialcode;
     public String local;
