@@ -11,15 +11,17 @@ import java.util.Date;
 
 public class Account implements Serializable {
     
-    private double money;
+    protected double money;
     private String iban;
-    private ArrayList<Moviment> moviments;
+    protected ArrayList<Moviment> moviments;
     private double creditemoney;
     private double totalcreditemoney;
     private double payedcredit;
     protected double percent;
     private Date datecredite_start;
     protected Date dateaccount_created;
+    protected double money_demanded;
+    protected double total_money_removed;
 
 
     //auxiliares
@@ -32,6 +34,7 @@ public class Account implements Serializable {
         this.moviments = new ArrayList<>();
         this.percent = Configurations.percent_normal_account;
         this.dateaccount_created = new Date();
+        this.money_demanded = Configurations.money_demand_corrent_account;
         
     }
     
@@ -39,6 +42,7 @@ public class Account implements Serializable {
         this.money = money;
     }
     public double getMoney(){
+        demandMaintance();
         return this.money;
     }
 
@@ -46,7 +50,18 @@ public class Account implements Serializable {
     //cobrar manutenção
     protected boolean demandMaintance(){
         long seconds = seconds(dateaccount_created);
-        int cont = countMultiplesTime(seconds, last_time_to_pay_account, Configurations.)
+        int cont = countMultiplesTime(seconds, last_time_to_pay_account, Configurations.second_time_to_apply_policy);
+        
+        System.out.println(cont+ " politicas");
+
+        double debit = cont * this.money_demanded;
+
+        if(this.money > debit ){
+            this.money -= debit;
+            last_time_to_pay_account = seconds;
+            this.moviments.add(new Moviment(-debit, Configurations.mov_type_maintanance, this.money));
+        }
+        
         return true;
     }
 
@@ -159,8 +174,9 @@ public class Account implements Serializable {
         return this.internalRemoveMoney(money);
     }
     protected boolean internalRemoveMoney(double money){
-        if(this.money > 0){
+        if(this.money - money >= 0){
             this.money -= money;
+            this.total_money_removed += money;
             this.moviments.add(new Moviment(-money, Configurations.mov_type_remov, this.money));
             return true;
         }
@@ -171,20 +187,21 @@ public class Account implements Serializable {
         return this.money > 0;
     }
     
-    public boolean transfere(Double money, String destinationiban, Date dateend){
+    public boolean transfere(double money, String destinationiban, Date dateend){
        return this.internalTransfere(money, destinationiban, dateend);
     }
-    protected boolean internalTransfere(Double money, String destinationiban, Date dateend){
+    protected boolean internalTransfere(double money, String destinationiban, Date dateend){
         if(this.money < money)
             return false;
         if(destinationiban == this.iban)
             return false;
+        this.total_money_removed += money;
         this.money -= money;
         this.moviments.add(new Moviment(-money, new Date(), dateend, this.iban, destinationiban, this.money));
         return true;
     }
 
-    public boolean receive(Double money, String originiban, Date dateend){
+    public boolean receive(double money, String originiban, Date dateend){
         if(money <= 0)
             return false;
         this.money += money;

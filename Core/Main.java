@@ -10,6 +10,7 @@ import java.util.function.BiConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import Controller.Account;
+import Controller.AccountFinancy;
 import Controller.Admin;
 import Controller.Agency;
 import Controller.BI;
@@ -186,12 +187,20 @@ public class Main {
                                                             bi.fullname = name;
                                                             IClient client;
                                                             System.out.println("O tipo de cliente (singular/s e colectivo/c)");
-                                                            System.out.println();
-                                                            if(sc.nextLine().equals("s")){
-                                                                client = new PersonSingular(bi, "", "");
+                                                            String clitype = sc.nextLine();
+                                                            System.out.println("O tipo de conta (p/c)");
+                                                            String accountype = sc.nextLine();
+                                                            Account account = new Account();
+                                                            if(accountype.equals("p")){
+                                                                account = new AccountFinancy();
+                                                            }
+                                                                    
+
+                                                            if(clitype.equals("s")){
+                                                                client = new PersonSingular(account, bi, "", "");
                                                             }else{
-                                                                client = new PersonColective(new Comertial(codeclient, name));
-                                                        }
+                                                                client = new PersonColective(account, new Comertial(codeclient, name));
+                                                            }
                                                                     
                                                             Software.actualAgencyAppendClient(client);
                                                         }

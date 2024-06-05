@@ -4,11 +4,11 @@ public class PersonSingular  extends Person implements IClient{
     
     BI bi;
     Account account;
-    public PersonSingular(BI bi, String phone, String optionalphone){
+    public PersonSingular(Account account, BI bi, String phone, String optionalphone){
         super(phone, optionalphone);
         this.phone = phone;
         this.bi = bi;
-        this.account = new Account();
+        this.account = account;
     }
 
   

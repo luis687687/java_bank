@@ -3,10 +3,10 @@ public class PersonColective extends Person implements IClient {
     
     Comertial comertial;
     Account account;
-    public PersonColective(Comertial comertial){
+    public PersonColective(Account account, Comertial comertial){
         super(comertial.phone, comertial.optionalphone);
         this.comertial = comertial;
-        this.account = new Account();
+        this.account =account;
     }
 
     public String getName(){
